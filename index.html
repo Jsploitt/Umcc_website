@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Download/ Upload Friday 08:00 – UMCC</title>
+<link rel="icon" href="logo.png">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#333;font:400 15px/1.5 "Libre Franklin","Helvetica Neue",Helvetica,Arial,sans-serif}
+a{color:#222}
+.wrap{max-width:700px;margin:0 auto;padding:0 2em}
+.site-header{background:#fafafa;border-bottom:1px solid #eee;padding:2em 0}
+.site-branding .wrap{display:flex;align-items:center;gap:1.25em}
+.custom-logo{width:80px;height:80px;display:block}
+.site-title{margin:0;font-size:22px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.site-title a{text-decoration:none}
+.site-description{margin:.2em 0 0;color:#666;font-size:14px}
+.site-content{padding:3em 0}
+.entry-title{margin:0 0 1em;font-size:28px;font-weight:300;line-height:1.2;color:#333}
+h2{font-size:26px;font-weight:300;line-height:1.4;margin:1.5em 0 .6em}
+h2 span{font-size:1.625rem}
+p{margin:0 0 1.5em}
+.download-link{font-weight:700}
+.field label{display:block;font-weight:700;margin-bottom:.5em}
+.dropzone{border:2px dashed #ccc;border-radius:4px;padding:2em 1em;text-align:center;color:#666;cursor:pointer}
+.dropzone.over{border-color:#222;background:#fafafa}
+.dropzone input{display:none}
+.dropzone a{font-weight:700}
+#files{list-style:none;margin:.75em 0 0;padding:0;font-size:14px}
+#files li{padding:.25em 0}
+#files li.bad{color:#b00020}
+button{margin-top:1em;background:#222;color:#fff;border:0;border-radius:2px;padding:.9em 2em;font:800 14px inherit;font-family:inherit;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+button:hover{background:#767676}
+#msg{margin-top:1em;font-weight:700}
+.site-footer{border-top:1px solid #eee;padding:2em 0;font-size:14px}
+.site-footer a{color:#666;text-decoration:none}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-branding"><div class="wrap">
+    <a href="#"><img class="custom-logo" src="logo.png" alt="UMCC" width="250" height="250"></a>
+    <div>
+      <p class="site-title"><a href="#">UMCC</a></p>
+      <p class="site-description">University of Münster Case Club</p>
+    </div>
+  </div></div>
+</header>
+
+<main class="site-content"><div class="wrap">
+  <article>
+    <h1 class="entry-title">Case Download/ Upload Friday 08:00</h1>
+    <p>Dear Participants, you can download the case and upload your presentation here. The UMCC wishes you the best of luck. <strong>Please remember to name your files accordingly </strong>(Universityname_Casename)</p>
+
+    <h2>Download Case here at 08:00</h2>
+    <p><a class="download-link" id="download-link" href="#" rel="nofollow">08:00 Friday (43 downloads)</a></p>
+
+    <h2>Upload Files Here,&nbsp;<span>Upload Closes at 20:00</span></h2>
+    <form id="upload-form">
+      <div class="field">
+        <label for="file-input">Upload Casefiles</label>
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="file-input" name="upload-1[]" multiple>
+          <p style="margin:0">Drag and Drop (or) <a href="#" id="choose">Choose Files</a></p>
+        </div>
+        <ul id="files"></ul>
+      </div>
+      <button type="submit">Submit</button>
+      <div id="msg" role="alert" aria-live="polite"></div>
+    </form>
+  </article>
+</div></main>
+
+<footer class="site-footer"><div class="wrap"><a href="https://wordpress.org/">Proudly powered by WordPress</a></div></footer>
+
+<script>
+const MAX = 64000000;
+const input = document.getElementById('file-input');
+const zone = document.getElementById('dropzone');
+const list = document.getElementById('files');
+const msg = document.getElementById('msg');
+let files = [];
+
+function render() {
+  list.innerHTML = '';
+  files.forEach(f => {
+    const li = document.createElement('li');
+    const tooBig = f.size > MAX;
+    li.textContent = f.name + (tooBig ? ' (Maximum file size allowed is 64 MB.)' : '');
+    if (tooBig) li.className = 'bad';
+    list.appendChild(li);
+  });
+}
+function add(fl) { files = files.concat(Array.from(fl)); render(); }
+
+document.getElementById('choose').addEventListener('click', e => { e.preventDefault(); input.click(); e.stopPropagation(); });
+zone.addEventListener('click', () => input.click());
+input.addEventListener('change', () => { add(input.files); input.value = ''; });
+['dragenter', 'dragover'].forEach(t => zone.addEventListener(t, e => { e.preventDefault(); zone.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => zone.addEventListener(t, e => { e.preventDefault(); zone.classList.remove('over'); }));
+zone.addEventListener('drop', e => add(e.dataTransfer.files));
+
+document.getElementById('upload-form').addEventListener('submit', e => {
+  e.preventDefault();
+  if (!files.length) { msg.textContent = 'This field is required. Please upload a file.'; return; }
+  // [NEEDS: upload endpoint, UMCC web owner]
+  msg.textContent = 'Upload endpoint not connected yet.';
+});
+</script>
+</body>
+</html>
